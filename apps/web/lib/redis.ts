@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+import Redis, { type RedisOptions } from "ioredis";
 import { env } from "./env";
 
 const globalForRedis = globalThis as unknown as {
@@ -6,15 +6,33 @@ const globalForRedis = globalThis as unknown as {
   redisSub?: Redis;
 };
 
+/** Parse Redis URL with new URL() instead of the deprecated url.parse() */
+function parseRedisUrl(rawUrl: string): RedisOptions {
+  try {
+    const u = new URL(rawUrl);
+    return {
+      host: u.hostname,
+      port: u.port ? parseInt(u.port, 10) : 6379,
+      password: u.password ? decodeURIComponent(u.password) : undefined,
+      username: u.username ? decodeURIComponent(u.username) : undefined,
+      db: u.pathname && u.pathname.length > 1 ? parseInt(u.pathname.slice(1), 10) || 0 : 0,
+      tls: u.protocol === "rediss:" ? {} : undefined,
+    };
+  } catch {
+    // Fallback: return the raw URL so ioredis can attempt its own parsing
+    return { host: rawUrl };
+  }
+}
+
 function createClient(): Redis | null {
   try {
-    const client = new Redis(env.REDIS_URL, {
-      lazyConnect: true, // don't connect on import
+    const client = new Redis({
+      ...parseRedisUrl(env.REDIS_URL),
+      lazyConnect: true,
       maxRetriesPerRequest: 1,
       enableReadyCheck: false,
       connectTimeout: 3000,
     });
-    // Swallow connection errors so they don't crash the process
     client.on("error", () => {});
     return client;
   } catch {
@@ -29,7 +47,8 @@ export const redis: Redis | null =
 
 export function makeSubscriber(): Redis | null {
   try {
-    const client = new Redis(env.REDIS_URL, {
+    const client = new Redis({
+      ...parseRedisUrl(env.REDIS_URL),
       lazyConnect: true,
       maxRetriesPerRequest: null,
     });
@@ -61,7 +80,6 @@ export async function cached<T>(
     await redis.set(key, JSON.stringify(value), "EX", ttlSeconds).catch(() => {});
     return value;
   } catch {
-    // Redis unavailable — serve uncached
     return loader();
   }
 }

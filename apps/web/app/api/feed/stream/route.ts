@@ -5,6 +5,7 @@ import type { TxEvent } from "@creator-intel/shared";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 300; // Vercel max — keep SSE alive up to 5 min
 
 export async function GET(req: NextRequest) {
   const mint = req.nextUrl.searchParams.get("mint");
