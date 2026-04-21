@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
-  Area, AreaChart, ResponsiveContainer, YAxis, Tooltip, ReferenceLine,
+  Area, AreaChart, ResponsiveContainer, YAxis, Tooltip,
 } from "recharts";
 import { Panel } from "./Panel";
 import { fmtPct } from "@/lib/utils";
@@ -87,8 +87,8 @@ export function MarketSignals({ mint }: Props) {
         <div className="grid grid-cols-3 gap-2">
           <StatPill label="Vol Spike" color="#22d3ee"
             value={s ? `${s.volumeSpike.toFixed(2)}×` : "—"} />
-          <StatPill label="Whale Txns" color="#a855f7"
-            value={s ? String(s.whaleCount ?? 0) : "—"} />
+          <StatPill label="Net Flow" color="#a855f7"
+            value={s ? `${(s.buyPressurePct - s.sellPressurePct).toFixed(0)}%` : "—"} />
           <StatPill label="Alert" color={alertColor}
             value={s?.priceAlert?.toUpperCase() ?? "—"} />
         </div>

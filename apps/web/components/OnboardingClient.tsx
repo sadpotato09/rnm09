@@ -23,10 +23,12 @@ const CARDS: { role: Role; num: string; label: string; headline: string; desc: s
   },
 ];
 
+type CardDef = (typeof CARDS)[number];
+
 function TiltCard({
   card, submitting, onClick,
 }: {
-  card: typeof CARDS[0];
+  card: CardDef;
   submitting: Role | null;
   onClick: () => void;
 }) {
