@@ -65,7 +65,7 @@ function TiltCard({
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ boxShadow: `0 16px 48px rgba(0,0,0,0.5), 0 0 40px ${card.glow}` } as object}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
     >
       {/* Background glow blob */}
       <div
@@ -199,7 +199,7 @@ export function OnboardingClient() {
           className="text-center space-y-3"
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
         >
           <div
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-bold tracking-[0.3em] uppercase mb-2"

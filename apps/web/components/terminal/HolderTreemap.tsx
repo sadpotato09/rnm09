@@ -115,7 +115,7 @@ function HolderCell({ entry, rank, loading, index }: {
       }}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 0.5 + scale * 0.5, scale: 1 }}
-      transition={{ duration: 0.3, delay: index * 0.03, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.3, delay: index * 0.03, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
       whileHover={{
         scale: 1.1,
         zIndex: 10,

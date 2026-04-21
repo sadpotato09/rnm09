@@ -26,7 +26,7 @@ function AnimatedBar({
           style={{ background: color, boxShadow: `0 0 8px ${color}60` }}
           initial={{ width: 0 }}
           animate={{ width: `${Math.min(100, pct)}%` }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay }}
         />
       </div>
     </div>

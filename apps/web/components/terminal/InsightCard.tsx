@@ -49,7 +49,7 @@ function ArcGauge({ value, color, size = 64 }: { value: number; color: string; s
         style={{ filter: `drop-shadow(0 0 4px ${color})` }}
         initial={{ strokeDasharray: `0 ${circ}` }}
         animate={{ strokeDasharray: `${dash} ${gap + circ * 0.25}` }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 0.3 }}
       />
     </svg>
   );
@@ -181,7 +181,7 @@ export function InsightCard({ mint }: { mint: string }) {
                     }}
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.min(100, data.signals.topHolderPct)}%` }}
-                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 0.4 }}
                   />
                 </div>
               </div>
@@ -206,7 +206,7 @@ export function InsightCard({ mint }: { mint: string }) {
                             style={{ background: "linear-gradient(90deg, #a855f7, #22d3ee)" }}
                             initial={{ width: 0 }}
                             animate={{ width: `${pct}%` }}
-                            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.3 + i * 0.05 }}
+                            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 0.3 + i * 0.05 }}
                           />
                         </div>
                         <span className="text-[10px] text-term-violet tabular-nums w-10 text-right">
