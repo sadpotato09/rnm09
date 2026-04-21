@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,23 +16,17 @@
   }
 
   ::selection {
-    background: rgba(57, 255, 136, 0.25);
+    background: rgba(168, 85, 247, 0.3);
   }
 
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: rgba(57, 255, 136, 0.15);
-    border-radius: 3px;
+    background: rgba(168, 85, 247, 0.2);
+    border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(57, 255, 136, 0.3);
+    background: rgba(168, 85, 247, 0.4);
   }
 
   .scanlines::before {
@@ -40,46 +36,89 @@
     pointer-events: none;
     background: repeating-linear-gradient(
       to bottom,
-      rgba(57, 255, 136, 0.03) 0px,
-      rgba(57, 255, 136, 0.03) 1px,
+      rgba(168, 85, 247, 0.015) 0px,
+      rgba(168, 85, 247, 0.015) 1px,
       transparent 1px,
-      transparent 3px
+      transparent 4px
     );
     z-index: 50;
   }
 }
 
 @layer components {
+  /* ── Glass panel (replaces flat .panel) ── */
   .panel {
-    @apply bg-term-panel border border-term-border shadow-term rounded-sm;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: rgba(12, 16, 24, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+    border-radius: 12px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
   }
   .panel:hover {
-    border-color: rgba(57, 255, 136, 0.15);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
   }
+
+  /* Creator mode accent */
+  .panel-creator {
+    border-color: rgba(168, 85, 247, 0.2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(168,85,247,0.08), inset 0 1px 0 rgba(168,85,247,0.08);
+  }
+  .panel-creator:hover {
+    border-color: rgba(168, 85, 247, 0.4);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 30px rgba(168,85,247,0.12), inset 0 1px 0 rgba(168,85,247,0.1);
+  }
+
+  /* Trader mode accent */
+  .panel-trader {
+    border-color: rgba(34, 211, 238, 0.15);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(34,211,238,0.06), inset 0 1px 0 rgba(34,211,238,0.06);
+  }
+  .panel-trader:hover {
+    border-color: rgba(34, 211, 238, 0.35);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 30px rgba(34,211,238,0.1), inset 0 1px 0 rgba(34,211,238,0.08);
+  }
+
   .panel-header {
-    @apply flex items-center justify-between px-3 py-2 border-b border-term-border text-xs uppercase tracking-[0.2em] text-term-dim;
+    @apply flex items-center justify-between px-4 py-3 border-b text-xs uppercase tracking-[0.2em];
+    border-color: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.4);
   }
-  .panel-body {
-    @apply p-3;
+  .panel-body { @apply p-4; }
+
+  .metric { @apply flex flex-col gap-1; }
+  .metric-label { @apply text-[10px] uppercase tracking-[0.18em]; color: rgba(255,255,255,0.35); }
+  .metric-value { @apply text-2xl font-display font-bold tabular-nums text-term-text; }
+  .metric-delta-up { @apply text-term-green text-xs font-medium; }
+  .metric-delta-down { @apply text-term-red text-xs font-medium; }
+  .caret::after { content: "▋"; @apply text-term-violet animate-blink ml-0.5; }
+
+  /* Shimmer skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+    border-radius: 6px;
   }
-  .metric {
-    @apply flex flex-col gap-0.5;
+
+  /* Gradient text */
+  .text-gradient-creator {
+    background: linear-gradient(135deg, #a855f7 0%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  .metric-label {
-    @apply text-[10px] uppercase tracking-[0.18em] text-term-dim;
+  .text-gradient-trader {
+    background: linear-gradient(135deg, #22d3ee 0%, #39ff88 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  .metric-value {
-    @apply text-xl tabular-nums text-term-text;
-  }
-  .metric-delta-up {
-    @apply text-term-green text-xs;
-  }
-  .metric-delta-down {
-    @apply text-term-red text-xs;
-  }
-  .caret::after {
-    content: "▋";
-    @apply text-term-green animate-blink ml-0.5;
-  }
+
+  /* Glow ring */
+  .ring-glow-violet { box-shadow: 0 0 0 1px rgba(168,85,247,0.4), 0 0 20px rgba(168,85,247,0.2); }
+  .ring-glow-cyan   { box-shadow: 0 0 0 1px rgba(34,211,238,0.4), 0 0 20px rgba(34,211,238,0.2); }
+  .ring-glow-green  { box-shadow: 0 0 0 1px rgba(57,255,136,0.4), 0 0 20px rgba(57,255,136,0.2); }
 }
