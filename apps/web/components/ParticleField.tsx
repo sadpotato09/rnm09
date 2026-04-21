@@ -53,6 +53,7 @@ export function ParticleField() {
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
+        if (!p) continue;
 
         // Mouse parallax pull
         const dx = mx - p.x;
@@ -85,6 +86,7 @@ export function ParticleField() {
         // Draw connections
         for (let j = i + 1; j < particles.length; j++) {
           const q = particles[j];
+          if (!q) continue;
           const ex = p.x - q.x;
           const ey = p.y - q.y;
           const d = Math.sqrt(ex * ex + ey * ey);
