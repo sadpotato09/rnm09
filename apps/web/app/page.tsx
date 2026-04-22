@@ -91,8 +91,17 @@ export default function LandingPage() {
       <div className="fixed bottom-1/4 right-10 w-80 h-80 rounded-full pointer-events-none z-0"
         style={{ background: "rgba(168,85,247,0.06)", filter: "blur(120px)", animation: "auraFloat 8s ease-in-out 3s infinite" }} />
 
-      {/* CRT scanlines */}
-      <div className="scanlines" />
+      {/* CRT scanlines — inline so pointer-events-none is guaranteed via Tailwind utility */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          zIndex: 9998,
+          backgroundImage:
+            "linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.18) 50%), " +
+            "linear-gradient(90deg, rgba(255,0,0,0.03), rgba(0,255,0,0.01), rgba(0,0,255,0.03))",
+          backgroundSize: "100% 4px, 6px 100%",
+        }}
+      />
 
       {/* ── Nav ── */}
       <nav className="relative z-20 flex items-center justify-between px-6 py-5"

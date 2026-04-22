@@ -137,23 +137,7 @@ export function MegaInput() {
             placeholder="Paste mint address to scan..."
             spellCheck={false}
             className="w-full bg-transparent outline-none text-white text-base tracking-wider placeholder:text-white/25"
-            style={{ fontFamily: "'JetBrains Mono', monospace", caretColor: "transparent" }}
-          />
-          {/* Block cursor */}
-          <span
-            style={{
-              position: "absolute",
-              left: value.length === 0 ? 0 : `calc(${value.length}ch + 2px)`,
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: 10,
-              height: 20,
-              background: "#a855f7",
-              boxShadow: "0 0 12px rgba(168,85,247,0.8)",
-              animation: "auraBlink 1s steps(1) infinite",
-              display: focused || value.length === 0 ? "block" : "none",
-              pointerEvents: "none",
-            }}
+            style={{ fontFamily: "'JetBrains Mono', monospace", caretColor: "#a855f7" }}
           />
         </div>
         <span className="hidden md:inline text-[10px] tracking-[0.25em] uppercase text-white/25 font-mono">
