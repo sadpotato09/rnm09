@@ -65,9 +65,19 @@ export function ActivityFeed({ mint }: Props) {
 
   useEffect(() => {
     mountedRef.current = true;
-    connect();
+    // Delay SSE connection by 1 s so the 6 short data-fetches (/api/me,
+    // /api/revenue, /api/signals, /api/holders, /api/insights, /api/me/role)
+    // can all complete before the persistent EventSource occupies a
+    // connection slot.  HTTP/1.1 allows only 6 connections per host — without
+    // this delay the SSE blocks one slot permanently and one data request
+    // stalls for up to 20 s waiting for a free slot.
+    const initTimer = setTimeout(() => {
+      if (mountedRef.current) connect();
+    }, 1000);
+
     return () => {
       mountedRef.current = false;
+      clearTimeout(initTimer);
       esRef.current?.close();
       if (retryRef.current) clearTimeout(retryRef.current);
     };
