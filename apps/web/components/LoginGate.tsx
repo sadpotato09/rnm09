@@ -2,7 +2,7 @@
 
 import { usePrivy } from "@privy-io/react-auth";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const SESSION_KEY = "aura_role_selected";
 
@@ -30,34 +30,48 @@ export function LoginGate({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isDemo, setIsDemo] = useState(false);
+  // Prevent calling router.replace more than once per mount
+  const navigatedRef = useRef(false);
 
   // Handle ?demo=true + read existing demo cookie
   useEffect(() => {
     if (searchParams.get("demo") === "true") {
       setDemoCookie();
       setIsDemo(true);
-      router.replace("/terminal");
     } else {
       setIsDemo(getDemoCookie());
     }
-  }, [searchParams, router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run once on mount — searchParams doesn't change after initial load
 
-  // Route guard — only runs once Privy is ready
+  // Route guard — fires once when Privy is ready, never again
   useEffect(() => {
-    if (!ready) return;
-    if (isDemo) return;
-    if (!authenticated) { router.replace("/login"); return; }
-    if (!hasSelectedRoleThisSession()) { router.replace("/onboarding"); return; }
-  }, [ready, authenticated, isDemo, router]);
+    if (!ready || isDemo || navigatedRef.current) return;
+    if (!authenticated) {
+      navigatedRef.current = true;
+      router.replace("/login");
+      return;
+    }
+    if (!hasSelectedRoleThisSession()) {
+      navigatedRef.current = true;
+      router.replace("/onboarding");
+    }
+  // router is a stable singleton in Next.js App Router — safe to omit
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, authenticated, isDemo]);
 
   // ── Render logic ──────────────────────────────────────────────────────────
   // Returning users (session flag set): show content immediately while Privy
   // loads in the background — no spinner, no delay.
-  // First-time visitors: wait for Privy to confirm auth before showing anything.
+  // First-time/unauthenticated visitors: wait for Privy before deciding.
   const hasSession = hasSelectedRoleThisSession();
 
+  // Still loading Privy and no local session signal — show spinner
   if (!isDemo && !ready && !hasSession) return <BootScreen label="booting terminal…" />;
+  // Privy confirmed: not authenticated — hold here while redirect fires
   if (!isDemo && ready && !authenticated)  return <BootScreen label="redirecting…" />;
+  // Privy confirmed: authenticated but no role chosen — hold while redirect fires
+  if (!isDemo && ready && authenticated && !hasSession) return <BootScreen label="loading profile…" />;
 
   const handleDisconnect = () => {
     if (isDemo) {
