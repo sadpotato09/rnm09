@@ -15,8 +15,10 @@ const config: Config = {
       colors: {
         term: {
           bg: "#060810",
+          "bg-deeper": "#03050a",
           panel: "#0c1018",
           border: "#1a2235",
+          hairline: "rgba(255,255,255,0.06)",
           text: "#e2eaff",
           dim: "#4a5a7a",
           green: "#39ff88",
@@ -25,6 +27,13 @@ const config: Config = {
           cyan: "#22d3ee",
           violet: "#a855f7",
           blue: "#3b82f6",
+        },
+        aura: {
+          god:   "#39ff88",   /* 90-100 */
+          based: "#22d3ee",   /* 75-89  */
+          solid: "#a855f7",   /* 60-74  */
+          mid:   "#f59e0b",   /* 40-59  */
+          ngmi:  "#f43f5e",   /* 0-39   */
         },
       },
       backgroundImage: {
@@ -95,6 +104,18 @@ const config: Config = {
           "0%": { opacity: "0", transform: "scale(0.9)" },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
+        auraFloat: {
+          "0%,100%": { transform: "translate(0,0)" },
+          "50%": { transform: "translate(8px,-14px)" },
+        },
+        auraBlink: {
+          "0%,50%": { opacity: "1" },
+          "51%,100%": { opacity: "0" },
+        },
+        auraFadeIn: {
+          "0%": { opacity: "0", transform: "translateY(6px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         blink: "blink 1s steps(1) infinite",
@@ -112,6 +133,9 @@ const config: Config = {
         shimmer: "shimmer 2.5s linear infinite",
         rotateSlow: "rotateSlow 20s linear infinite",
         scaleIn: "scaleIn 0.3s ease-out both",
+        auraFloat: "auraFloat 5s ease-in-out infinite",
+        auraBlink: "auraBlink 1s steps(1) infinite",
+        auraFadeIn: "auraFadeIn 0.5s ease-out both",
       },
     },
   },
