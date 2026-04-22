@@ -12,7 +12,8 @@ export function sseStream<T>(opts: {
           encoder.encode(`data: ${JSON.stringify(event)}\n\n`),
         );
       };
-      controller.enqueue(encoder.encode(`: connected\n\n`));
+      // Pad to ~2KB so Vercel/nginx proxy flushes immediately instead of buffering
+      controller.enqueue(encoder.encode(`: connected ${" ".repeat(2048)}\n\n`));
       const unsubscribe = await opts.subscribe(push);
       const hb = setInterval(() => {
         if (!closed) controller.enqueue(encoder.encode(`: hb\n\n`));
@@ -41,8 +42,10 @@ export function sseStream<T>(opts: {
 }
 
 export const sseHeaders: HeadersInit = {
-  "Content-Type": "text/event-stream",
-  "Cache-Control": "no-cache, no-transform",
+  "Content-Type": "text/event-stream; charset=utf-8",
+  "Cache-Control": "no-cache, no-store, no-transform",
   Connection: "keep-alive",
   "X-Accel-Buffering": "no",
+  "X-Content-Type-Options": "nosniff",
+  "Transfer-Encoding": "chunked",
 };

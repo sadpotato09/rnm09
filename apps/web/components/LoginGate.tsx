@@ -30,7 +30,8 @@ export function LoginGate({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isDemo, setIsDemo] = useState(false);
-  const [checkingRole, setCheckingRole] = useState(true);
+  // If role was already selected this session, skip the loading screen immediately
+  const [checkingRole, setCheckingRole] = useState(() => !hasSelectedRoleThisSession());
 
   // Handle ?demo=true + read existing demo cookie
   useEffect(() => {
