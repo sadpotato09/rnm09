@@ -46,7 +46,7 @@ export function Dashboard() {
       return;
     }
 
-    fetch("/api/me/role", { cache: "no-store" })
+    fetch("/api/me/role", { cache: "no-store", priority: "high" } as RequestInit)
       .then((r) => r.json())
       .then((data) => {
         if (data?.role === "trader" || data?.role === "creator") setMode(data.role);

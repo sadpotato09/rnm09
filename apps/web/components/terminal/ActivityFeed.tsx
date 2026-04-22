@@ -65,19 +65,34 @@ export function ActivityFeed({ mint }: Props) {
 
   useEffect(() => {
     mountedRef.current = true;
-    // Delay SSE connection by 1 s so the 6 short data-fetches (/api/me,
-    // /api/revenue, /api/signals, /api/holders, /api/insights, /api/me/role)
-    // can all complete before the persistent EventSource occupies a
-    // connection slot.  HTTP/1.1 allows only 6 connections per host — without
-    // this delay the SSE blocks one slot permanently and one data request
-    // stalls for up to 20 s waiting for a free slot.
-    const initTimer = setTimeout(() => {
+
+    // Open the SSE only when the browser is idle — i.e. after all the short
+    // data-fetches (/api/me, /api/revenue, /api/signals, /api/holders,
+    // /api/insights, /api/me/role) have already claimed and released their
+    // HTTP connection slots.  HTTP/1.1 caps connections at 6/host; firing the
+    // permanent EventSource simultaneously starves one short fetch for ~20 s.
+    //
+    // requestIdleCallback fires once the call stack is empty and no pending
+    // network responses are being processed.  The { timeout: 3000 } fallback
+    // ensures we still connect within 3 s on slow cold starts.
+    let ricId: number | null = null;
+    let fallbackTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const startSSE = () => {
       if (mountedRef.current) connect();
-    }, 1000);
+    };
+
+    if (typeof requestIdleCallback !== "undefined") {
+      ricId = requestIdleCallback(startSSE, { timeout: 3000 });
+    } else {
+      // Safari / older environments — plain timeout covers cold starts
+      fallbackTimer = setTimeout(startSSE, 2000);
+    }
 
     return () => {
       mountedRef.current = false;
-      clearTimeout(initTimer);
+      if (ricId !== null) cancelIdleCallback(ricId);
+      if (fallbackTimer !== null) clearTimeout(fallbackTimer);
       esRef.current?.close();
       if (retryRef.current) clearTimeout(retryRef.current);
     };
