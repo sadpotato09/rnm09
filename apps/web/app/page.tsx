@@ -189,6 +189,25 @@ export default function LandingPage() {
           <div id="aura" className="w-full max-w-2xl mx-auto">
             <MegaInput />
           </div>
+
+          {/* Demo shortcut */}
+          <div className="mt-6 flex items-center gap-4">
+            <span className="h-px w-16 bg-white/10" />
+            <Link
+              href="/terminal?demo=true"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-[11px] tracking-[0.2em] uppercase font-bold font-mono transition-all duration-200 hover:-translate-y-0.5"
+              style={{
+                background: "rgba(34,211,238,0.06)",
+                border: "1px solid rgba(34,211,238,0.25)",
+                color: "#22d3ee",
+              }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#22d3ee] animate-pulse"
+                style={{ boxShadow: "0 0 6px #22d3ee" }} />
+              Try Demo Mode
+            </Link>
+            <span className="h-px w-16 bg-white/10" />
+          </div>
         </section>
 
         {/* ── Interactive AURA Score Demo ── */}
