@@ -30,8 +30,6 @@ export function LoginGate({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isDemo, setIsDemo] = useState(false);
-  // If role was already selected this session, skip the loading screen immediately
-  const [checkingRole, setCheckingRole] = useState(() => !hasSelectedRoleThisSession());
 
   // Handle ?demo=true + read existing demo cookie
   useEffect(() => {
@@ -44,33 +42,22 @@ export function LoginGate({ children }: { children: React.ReactNode }) {
     }
   }, [searchParams, router]);
 
-  // Route guard
+  // Route guard — only runs once Privy is ready
   useEffect(() => {
     if (!ready) return;
-
-    if (isDemo) {
-      setCheckingRole(false);
-      return;
-    }
-
-    if (!authenticated) {
-      router.replace("/login");
-      return;
-    }
-
-    // Already picked a role this session → go straight to terminal
-    if (hasSelectedRoleThisSession()) {
-      setCheckingRole(false);
-      return;
-    }
-
-    // First visit this session → ask for role
-    router.replace("/onboarding");
+    if (isDemo) return;
+    if (!authenticated) { router.replace("/login"); return; }
+    if (!hasSelectedRoleThisSession()) { router.replace("/onboarding"); return; }
   }, [ready, authenticated, isDemo, router]);
 
-  if (!ready && !isDemo) return <BootScreen label="booting terminal…" />;
-  if (!authenticated && !isDemo) return <BootScreen label="redirecting…" />;
-  if (!isDemo && checkingRole) return <BootScreen label="loading profile…" />;
+  // ── Render logic ──────────────────────────────────────────────────────────
+  // Returning users (session flag set): show content immediately while Privy
+  // loads in the background — no spinner, no delay.
+  // First-time visitors: wait for Privy to confirm auth before showing anything.
+  const hasSession = hasSelectedRoleThisSession();
+
+  if (!isDemo && !ready && !hasSession) return <BootScreen label="booting terminal…" />;
+  if (!isDemo && ready && !authenticated)  return <BootScreen label="redirecting…" />;
 
   const handleDisconnect = () => {
     if (isDemo) {
