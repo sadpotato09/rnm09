@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ParticleField } from "./ParticleField";
+import { markRoleSelected } from "./LoginGate";
 
 type Role = "creator" | "trader";
 
@@ -165,6 +166,7 @@ export function OnboardingClient() {
         const { error: msg } = await res.json().catch(() => ({ error: "failed" }));
         throw new Error(msg || "failed to save role");
       }
+      markRoleSelected(); // allow LoginGate to pass through this session
       router.replace("/terminal");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
